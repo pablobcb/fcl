@@ -5,7 +5,7 @@
 #include "fcl.cpp"
 #include <vector>
 
-/* functional collection library */
+/* mock factory */
 std::vector<int> newIntVector()
 {
     std::vector<int> v;
@@ -40,7 +40,9 @@ std::vector<int> newIntList()
     return l;
 }
 
-
+/*****************************************************/
+/****************** EACH TEST ************************/
+/*****************************************************/
 void p(const int& n)
 {
     printf("[element]: %d\n", n);
@@ -51,28 +53,14 @@ int f(const int& n)
     return n + 1;
 }
 
-bool filter(const int& n)
-{
-    return n > 5;
-}
-
 int main(void)
 {
     std::vector<int> out;
+    std::vector<int>::iterator it;
 
-    printf("{each}\n");
-    fcl::each(newIntList(), p);
-    printf("\n");
-
-    printf("{map}\n");
     out = fcl::map(newIntVector(), f);
-    fcl::each(out, p);
-    printf("\n");
 
-    printf("{filter}\n");
-    out = fcl::filter(newIntVector(), filter);
-    fcl::each(out, p);
-    printf("\n");
+    fcl::map(out, p);
 
     return 0;
 }
