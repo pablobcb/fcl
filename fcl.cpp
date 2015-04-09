@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <utility>
 
 //TODO: https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-List.html
 
@@ -7,6 +8,9 @@
 /* functional programming library designed to facilitate working with collections */
 namespace fcl
 {
+    /******************************************************************************************************/
+    /************************************ ITERATATION *****************************************************/
+    /******************************************************************************************************/
     template< 
         class IN_TYPE, 
         template < class IN_TYPE, class A = std::allocator< IN_TYPE > > class COLLECTION
@@ -15,7 +19,9 @@ namespace fcl
          std::for_each( collection.begin(), collection.end(), f );
     }
 
-
+    /******************************************************************************************************/
+    /************************************ TRANSFORMATION **************************************************/
+    /******************************************************************************************************/
     template< 
         class IN_TYPE, 
         class OUT_TYPE, 
@@ -38,7 +44,82 @@ namespace fcl
         return result;
     }
 
+    /******************************************************************************************************/
+    /******************************************** FOLDS ***************************************************/
+    /******************************************************************************************************/
+    template< 
+        class IN_TYPE,
+        class OUT_TYPE,
+        template < class IN_TYPE, class A = std::allocator< IN_TYPE > > class COLLECTION
+    > OUT_TYPE reduce (const COLLECTION< IN_TYPE >& collection, 
+        OUT_TYPE& initialValue, OUT_TYPE (*f) ( const OUT_TYPE&, const IN_TYPE& ) )
+    { 
+        OUT_TYPE result;
 
+        result = initialValue;
+
+        typename COLLECTION< IN_TYPE >::const_iterator it;
+
+        for( it = collection.begin() ; it != collection.end() ; ++it )
+        {
+            IN_TYPE node = *it;
+            result = f(result, node);
+        }
+        
+        return result;
+    }
+
+    /******************************************************************************************************/
+    /**************************************** SPECIAL FOLDS ***********************************************/
+    /******************************************************************************************************/
+    template< 
+        class IN_TYPE, 
+        template < class IN_TYPE, class A = std::allocator< IN_TYPE > > class COLLECTION
+    > bool any (const COLLECTION< IN_TYPE >& collection, bool (*f) ( const IN_TYPE& ) )
+    {
+
+        typename COLLECTION< IN_TYPE >::const_iterator it;
+
+        for( it = collection.begin() ; it != collection.end() ; ++it )
+        {
+            IN_TYPE node = *it;
+
+            bool any = f( node );
+
+            if ( any )
+            {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    template< 
+        class IN_TYPE, 
+        template < class IN_TYPE, class A = std::allocator< IN_TYPE > > class COLLECTION
+    > bool all (const COLLECTION< IN_TYPE >& collection, bool (*f) ( const IN_TYPE& ) )
+    {
+        typename COLLECTION< IN_TYPE >::const_iterator it;
+
+        for( it = collection.begin() ; it != collection.end() ; ++it )
+        {
+            IN_TYPE node = *it;
+
+            bool satisfies = f( node );
+
+            if ( !satisfies )
+            {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    /******************************************************************************************************/
+    /*********************************** SEARCH WITH PREDICATE ********************************************/
+    /******************************************************************************************************/
     template< 
         class IN_TYPE, 
         template < class IN_TYPE, class A = std::allocator< IN_TYPE > > class COLLECTION
@@ -87,12 +168,14 @@ namespace fcl
         return result;
     }
 
-
     template< 
         class IN_TYPE, 
         template < class IN_TYPE, class A = std::allocator< IN_TYPE > > class COLLECTION
-    > bool any (const COLLECTION< IN_TYPE >& collection, bool (*f) ( const IN_TYPE& ) )
+    > std::pair< COLLECTION < IN_TYPE >, COLLECTION < IN_TYPE > > partition (const COLLECTION< IN_TYPE >& collection, 
+        bool (*f) ( const IN_TYPE& ) )
     {
+        COLLECTION < IN_TYPE > satisfies;
+        COLLECTION < IN_TYPE > dontSatisfies;
 
         typename COLLECTION< IN_TYPE >::const_iterator it;
 
@@ -100,60 +183,18 @@ namespace fcl
         {
             IN_TYPE node = *it;
 
-            bool any = f( node );
+            bool passesFilter = f( node );
 
-            if ( any )
-            {
-                return true;
-            }
+            if ( passesFilter )
+                satisfies.push_back( node );
+            else 
+                dontSatisfies.push_back( node );
         }
         
-        return false;
-    }
-
-    template< 
-        class IN_TYPE, 
-        template < class IN_TYPE, class A = std::allocator< IN_TYPE > > class COLLECTION
-    > bool all (const COLLECTION< IN_TYPE >& collection, bool (*f) ( const IN_TYPE& ) )
-    {
-        typename COLLECTION< IN_TYPE >::const_iterator it;
-
-        for( it = collection.begin() ; it != collection.end() ; ++it )
-        {
-            IN_TYPE node = *it;
-
-            bool satisfies = f( node );
-
-            if ( !satisfies )
-            {
-                return false;
-            }
-        }
-        
-        return true;
+        return std::make_pair( satisfies, dontSatisfies );
     }
 
 
-   template< 
-        class IN_TYPE, 
-        class OUT_TYPE, 
-        template < class IN_TYPE, class A = std::allocator< IN_TYPE > > class COLLECTION
-    > OUT_TYPE reduce (const COLLECTION< IN_TYPE >& collection, 
-        OUT_TYPE& initialValue, OUT_TYPE (*f) ( const OUT_TYPE&, const IN_TYPE& ) )
-    { 
-        OUT_TYPE result;
 
-        result = initialValue;
-
-        typename COLLECTION< IN_TYPE >::const_iterator it;
-
-        for( it = collection.begin() ; it != collection.end() ; ++it )
-        {
-            IN_TYPE node = *it;
-            result = f(result, node);
-        }
-        
-        return result;
-    }
 
 }

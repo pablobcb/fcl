@@ -4,6 +4,7 @@
 #include <iostream>
 #include "fcl.cpp"
 #include <vector>
+#include <utility>
 
 /* functional collection library */
 std::vector<int> newIntVector()
@@ -104,6 +105,15 @@ int main(void)
     printf("{filter}\n");
     out = fcl::filter(newIntVector(), filter);
     fcl::each(out, p);
+    printf("\n");
+
+
+    printf("{partition}\n");
+    std::pair< std::vector < int > , std::vector< int > > pair = fcl::partition(newIntVector(), filter);
+    printf("{satisfies}\n");
+    fcl::each(pair.first, p);
+    printf("{dont satisfies}\n");
+    fcl::each(pair.second, p);
     printf("\n");
 
 
