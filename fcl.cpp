@@ -2,7 +2,8 @@
 #include <algorithm>
 
 /* functional programming library designed to facilitate working with collections */
-//TODO: reduce, find, all, dropwhile, takeWhile, take, drop
+//TODO: take, drop, takeWhile, dropWhile
+//TODO: alias map -> collect, find -> findOne, findALl -> filter
 namespace fcl
 {
     template< 
@@ -10,9 +11,7 @@ namespace fcl
         template < class IN_TYPE, class A = std::allocator< IN_TYPE > > class COLLECTION
     > void each ( const COLLECTION< IN_TYPE>& collection, void (*f) ( const IN_TYPE& ) )
     {
-        typename COLLECTION< IN_TYPE >::const_iterator it;
-
-        std::for_each( collection.begin(), collection.end(), f );
+         std::for_each( collection.begin(), collection.end(), f );
     }
 
 
@@ -52,13 +51,85 @@ namespace fcl
         for( it = collection.begin() ; it != collection.end() ; ++it )
         {
             IN_TYPE node = *it;
-            bool passedFilter = f(node);
+            bool passedFilter = f( node );
 
             if (passedFilter)
-                result.push_back(node);
+                result.push_back( node );
         }
         
         return result;
+    }
+    
+
+    template< 
+        class IN_TYPE, 
+        template < class IN_TYPE, class A = std::allocator< IN_TYPE > > class COLLECTION
+    > IN_TYPE find (const COLLECTION< IN_TYPE >& collection, bool (*f) ( const IN_TYPE& ) )
+    {
+        IN_TYPE result = 0;
+
+        typename COLLECTION< IN_TYPE >::const_iterator it;
+
+        for( it = collection.begin() ; it != collection.end() ; ++it )
+        {
+            IN_TYPE node = *it;
+
+            bool found = f( node );
+
+            if ( found )
+            {
+                result = node;
+                break;
+            }
+        }
+        
+        return result;
+    }
+
+
+    template< 
+        class IN_TYPE, 
+        template < class IN_TYPE, class A = std::allocator< IN_TYPE > > class COLLECTION
+    > bool any (const COLLECTION< IN_TYPE >& collection, bool (*f) ( const IN_TYPE& ) )
+    {
+
+        typename COLLECTION< IN_TYPE >::const_iterator it;
+
+        for( it = collection.begin() ; it != collection.end() ; ++it )
+        {
+            IN_TYPE node = *it;
+
+            bool any = f( node );
+
+            if ( any )
+            {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    template< 
+        class IN_TYPE, 
+        template < class IN_TYPE, class A = std::allocator< IN_TYPE > > class COLLECTION
+    > bool all (const COLLECTION< IN_TYPE >& collection, bool (*f) ( const IN_TYPE& ) )
+    {
+        typename COLLECTION< IN_TYPE >::const_iterator it;
+
+        for( it = collection.begin() ; it != collection.end() ; ++it )
+        {
+            IN_TYPE node = *it;
+
+            bool satisfies = f( node );
+
+            if ( !satisfies )
+            {
+                return false;
+            }
+        }
+        
+        return true;
     }
 
 

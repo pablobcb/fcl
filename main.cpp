@@ -56,6 +56,31 @@ bool filter(const int& n)
     return n > 5;
 }
 
+bool find (const int& n)
+{
+    return n > 5;
+}
+
+bool anyFalse (const int& n)
+{
+    return n > 20;
+}
+
+bool anyTrue (const int& n)
+{
+    return n > 5;
+}
+
+bool allTrue (const int& n)
+{
+    return n > 0;
+}
+
+bool allFalse (const int& n)
+{
+    return n > 5;
+}
+
 double reduce( const double& a, const int& b )
 {
     return ( (int) a ) + b;
@@ -82,13 +107,33 @@ int main(void)
     printf("\n");
 
 
+    printf("{find}\n");
+    int found = fcl::find(newIntVector(), find);
+    printf("%d\n", found);
+    printf("\n");
+
+
     printf("{reduce}\n");
     double initialValue = 1000.0;
     double res = fcl::reduce(newIntVector(), initialValue, reduce);
     printf("%f\n", res);
-
     printf("\n");
 
+
+    printf("{any}\n");
+    bool t = fcl::any(newIntVector(), anyTrue);
+    bool f = fcl::any(newIntVector(), anyFalse);
+    printf("should be true: %s\n", t ? "true" : "false"); 
+    printf("should be false: %s\n", f ? "true" : "false"); 
+    printf("\n");
+
+
+    printf("{all}\n");
+    t = fcl::all(newIntVector(), allTrue);
+    f = fcl::all(newIntVector(), allFalse);
+    printf("should be true: %s\n", t ? "true" : "false"); 
+    printf("should be false: %s\n", f ? "true" : "false"); 
+    printf("\n");
 
     return 0;
 }
