@@ -1,9 +1,10 @@
-#include <list>
 #include <algorithm>
 
-/* functional programming library designed to facilitate working with collections */
-//TODO: take, drop, takeWhile, dropWhile
+//TODO: https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-List.html
+
 //TODO: alias map -> collect, find -> findOne, findALl -> filter
+
+/* functional programming library designed to facilitate working with collections */
 namespace fcl
 {
     template< 
