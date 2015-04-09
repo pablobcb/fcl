@@ -2,6 +2,7 @@
 #include <algorithm>
 
 /* functional programming library designed to facilitate working with collections */
+//TODO: reduce, find, all, dropwhile, takeWhile, take, drop
 namespace fcl
 {
     template< 
@@ -65,20 +66,19 @@ namespace fcl
         class IN_TYPE, 
         class OUT_TYPE, 
         template < class IN_TYPE, class A = std::allocator< IN_TYPE > > class COLLECTION
-    > COLLECTION< OUT_TYPE > reduce (const COLLECTION< IN_TYPE >& collection, OUT_TYPE (*f) (const IN_TYPE&) )
+    > OUT_TYPE reduce (const COLLECTION< IN_TYPE >& collection, 
+        OUT_TYPE& initialValue, OUT_TYPE (*f) ( const OUT_TYPE&, const IN_TYPE& ) )
     { 
-        COLLECTION< IN_TYPE > result;
+        OUT_TYPE result;
+
+        result = initialValue;
 
         typename COLLECTION< IN_TYPE >::const_iterator it;
 
-        //std::copy_if( collection.begin(), collection.end(), result.begin(), f );
         for( it = collection.begin() ; it != collection.end() ; ++it )
         {
             IN_TYPE node = *it;
-            bool passedFilter = f(node);
-
-            if (passedFilter)
-                result.push_back(node);
+            result = f(result, node);
         }
         
         return result;

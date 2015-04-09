@@ -56,6 +56,11 @@ bool filter(const int& n)
     return n > 5;
 }
 
+double reduce( const double& a, const int& b )
+{
+    return ( (int) a ) + b;
+}
+
 int main(void)
 {
     std::vector<int> out;
@@ -64,15 +69,26 @@ int main(void)
     fcl::each(newIntList(), p);
     printf("\n");
 
+
     printf("{map}\n");
     out = fcl::map(newIntVector(), f);
     fcl::each(out, p);
     printf("\n");
 
+
     printf("{filter}\n");
     out = fcl::filter(newIntVector(), filter);
     fcl::each(out, p);
     printf("\n");
+
+
+    printf("{reduce}\n");
+    double initialValue = 1000.0;
+    double res = fcl::reduce(newIntVector(), initialValue, reduce);
+    printf("%f\n", res);
+
+    printf("\n");
+
 
     return 0;
 }
