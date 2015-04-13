@@ -2,7 +2,7 @@
 #include <list>
 #include <algorithm>
 #include <iostream>
-#include "fcl.cpp"
+#include "lib/fcl.cpp"
 #include <vector>
 #include <utility>
 
@@ -143,6 +143,18 @@ int main(void)
     f = fcl::all(newIntVector(), allFalse);
     printf("should be true: %s\n", t ? "true" : "false"); 
     printf("should be false: %s\n", f ? "true" : "false"); 
+    printf("\n");
+
+
+    printf("{take}\n");
+    out = fcl::take(newIntVector(), 3);
+    fcl::each(out, p);
+    printf("\n");
+
+
+    printf("{drop}\n");
+    out = fcl::drop(newIntVector(), 3);
+    fcl::each(out, p);
     printf("\n");
 
     return 0;
